@@ -9,10 +9,10 @@ async function parseCSV(filePath: string) {
     let counter = 0;
     let lastLoggedPercentage = 0;
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         fs.createReadStream(filePath)
             .pipe(csv())
-            .on('data', async (row) => {
+            .on('data', (row) => {
                 const mappedRow = {
                     Index: row['Index'],
                     User_Id: row['User Id'],
@@ -24,19 +24,28 @@ async function parseCSV(filePath: string) {
                     Date_of_birth: row['Date of birth'],
                     Job_Title: row['Job Title'],
                 };
-                try {
-                    await sqlServer.query('INSERT INTO people SET ?', mappedRow);
-                    counter++;
-                    const currentPercentage = Math.floor((counter / totalRows) * 100);
-                    if (currentPercentage >= lastLoggedPercentage + 5) {
-                        console.log(`Progress: ${currentPercentage}%`);
-                        lastLoggedPercentage = currentPercentage;
+                sqlServer.query('INSERT INTO people SET ?', mappedRow, (error) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        counter++;
+                        const currentPercentage = Math.floor((counter / totalRows) * 100);
+                        if (currentPercentage >= lastLoggedPercentage + 5) {
+                            console.log(`Progress: ${currentPercentage}%`);
+                            lastLoggedPercentage = currentPercentage;
+                        }
                     }
-                } catch (error) {
-                    reject(error);
-                }
+                });
             })
-            .on('end', resolve)
+            .on('end', () => {
+                sqlServer.end((err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            })
             .on('error', reject);
     });
 }
