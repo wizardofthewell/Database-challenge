@@ -1,4 +1,4 @@
-### Database challenge for Driven
+# Database challenge for Driven
 
 This repo houses Typescript files and the sample db for this coding challenge. 
 
@@ -8,11 +8,11 @@ To get started, ensure you have node installed on your device, clone the repo an
 
 ## Input the following commands into your CLI
 
-# Install repo packages
+### Install repo packages
 
 `npm i`
 
-# Install dev package for runnning ts without having to compile
+### Install dev package for runnning ts without having to compile
 
 `npm i --save-dev ts-node typescript`
 
@@ -35,7 +35,7 @@ Depending on your version of MySQL, you may need to run the following command in
 `ALTER USER 'admin'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Admin@123';`
 
 
-# Information about the schema: 
+## Information about the schema: 
 
 For this challenge I created only a single table called people. It uses the index number as the primary key, the user's ID can be used as a foreign key to reference a specific person in another table. Name, sex, email, phone and job title fields are all generic varchar fields, and date of birth is a date field. 
 
