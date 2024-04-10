@@ -24,7 +24,7 @@ async function parseCSV(filePath: string) {
                     Date_of_birth: row['Date of birth'],
                     Job_Title: row['Job Title'],
                 };
-                sqlServer.query('INSERT INTO people SET ?', mappedRow, (error) => {
+                sqlServer.query('INSERT IGNORE INTO people SET ?', mappedRow, (error) => {
                     if (error) {
                         reject(error);
                     } else {
